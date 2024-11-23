@@ -17,4 +17,36 @@ const registerUser = async (req, res) => {
     });
   }
 };
-module.exports={registerUser,}
+
+const loginUser = async (req, res) => {
+  let { email, password } = req.body;
+  try {
+    let existingUser = await User.findOne({ email });
+    if (existingUser) {
+      if (existingUser.password == password) {
+        return res.json({
+          msg: "User login successfully",
+          success: true,
+          user: existingUser,
+        });
+      } else {
+        return res.json({ msg: "Wrong password...!" });
+      }
+    } else {
+      res.json({
+        msg: "Error in logging,user not registered..!",
+        success: false,
+      });
+    }
+  } catch (error) {
+    res.json({
+      msg: "Error in logging user..!",
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+const updateUser = async (req, res) => {};
+
+module.exports = { registerUser, loginUser };
