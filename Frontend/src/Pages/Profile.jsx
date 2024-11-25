@@ -10,10 +10,21 @@ const Profile = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      let res = await userInstance.post(
+      let res = await userInstance.put(
         `/update/6744d4503f2bf012cb976d01`,
         userInfo
       );
+
+      let data = res.data;
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      let res = await userInstance.delete(`/delete/6744d4503f2bf012cb976d01`);
 
       let data = res.data;
       console.log(data);
@@ -68,11 +79,17 @@ const Profile = () => {
           <br />
           <button
             onClick={handleUpdate}
-            className="bg-green-950 text-white py-2 px-4 rounded-md hover:bg-green-800"
+            className="bg-green-950 text-white py-2 px-4 rounded-md hover:bg-green-800 mt-5"
           >
             Update Details
           </button>
         </form>
+        <button
+          className="text-red-600 bg-white rounded-md py-2 px-4  ml-56 hover:bg-red-600 "
+          onClick={handleDelete}
+        >
+          Delete Account
+        </button>
       </div>
     </div>
   );
