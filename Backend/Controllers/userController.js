@@ -69,6 +69,19 @@ const updateUser = async (req, res) => {
   }
 };
 
+const deleteUser = async (req, res) => {
+  let _id = req.params._id;
+  console.log(_id);
+  try {
+    await User.findByIdAndDelete(_id);
+    res.json({ msg: "User deleted successfully", success: true });
+  } catch (error) {
+    res.json({
+      msg: "Error in deleting user..!",
+      success: false,
+      error: error.message,
+    });
+  }
+};
 
-
-module.exports = { registerUser, loginUser, updateUser };
+module.exports = { registerUser, loginUser, updateUser, deleteUser };
