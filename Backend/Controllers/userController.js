@@ -47,6 +47,28 @@ const loginUser = async (req, res) => {
   }
 };
 
-const updateUser = async (req, res) => {};
+const updateUser = async (req, res) => {
+  let _id = req.params._id;
+  console.log(_id);
+  let { name, password, profilePic, coverPic, address, bio } = req.body;
+  try {
+    let data = await User.findByIdAndUpdate(
+      _id,
+      {
+        $set: { name, password, profilePic, coverPic, address, bio },
+      },
+      { new: true }
+    );
+    res.json({ msg: "User updated successfully", success: true, data });
+  } catch (error) {
+    res.json({
+      msg: "Error in updating user..!",
+      success: false,
+      error: error.message,
+    });
+  }
+};
 
-module.exports = { registerUser, loginUser };
+
+
+module.exports = { registerUser, loginUser, updateUser };
