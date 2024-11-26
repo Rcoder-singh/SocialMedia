@@ -1,14 +1,43 @@
 let User = require("../Models/userSchema");
+const bcrypt = require("bcryptjs");
+const salt = bcrypt.genSaltSync(10);
 const registerUser = async (req, res) => {
   let { name, email, password, address } = req.body;
   try {
-    let user = await User.create({
-      name,
-      email,
-      password,
-      address,
-    });
-    res.json({ msg: "User created successfully", success: true, user });
+    if (!name) {
+      return res.json({
+        msg: "Name is required!",
+        success: false,
+        name: "name",
+      });
+    }
+    if (!email) {
+      return res.json({
+        msg: "Email is required!",
+        success: false,
+        email: "email",
+      });
+    }
+    if (!password) {
+      return res.json({
+        msg: "Password is required!",
+        success: false,
+        password: "password",
+      });
+    }
+    let existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.json({ msg: "User already registered..!", success: false });
+    } else {
+      let hashedPassword = await bcrypt.hashSync(password, salt);
+      let user = await User.create({
+        name,
+        email,
+        password: hashedPassword,
+        address,
+      });
+      res.json({ msg: "User created successfully", success: true, user });
+    }
   } catch (error) {
     res.json({
       msg: "Error in creating user..!",
