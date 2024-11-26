@@ -52,7 +52,11 @@ const loginUser = async (req, res) => {
   try {
     let existingUser = await User.findOne({ email });
     if (existingUser) {
-      if (existingUser.password == password) {
+      let comparedPassword = bcrypt.compareSync(
+        password,
+        existingUser.password
+      );
+      if (comparedPassword) {
         return res.json({
           msg: "User login successfully",
           success: true,
