@@ -1,6 +1,8 @@
 let User = require("../Models/userSchema");
 const bcrypt = require("bcryptjs");
 const salt = bcrypt.genSaltSync(10);
+const jwt = require("jsonwebtoken");
+const JWT_SECRET = "Andres";
 const registerUser = async (req, res) => {
   let { name, email, password, address } = req.body;
   try {
@@ -57,10 +59,12 @@ const loginUser = async (req, res) => {
         existingUser.password
       );
       if (comparedPassword) {
+        var token = jwt.sign({ _id: existingUser._id }, JWT_SECRET);
         return res.json({
           msg: "User login successfully",
           success: true,
           user: existingUser,
+          token: token,
         });
       } else {
         return res.json({ msg: "Wrong password...!" });
@@ -82,13 +86,25 @@ const loginUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   let _id = req.params._id;
-  console.log(_id);
+  let userId = req.user;
+
+  console.log("From params", _id);
+  console.log("From Token", userId);
+
+  if (userId !== _id) {
+    return res.json({ msg: "unauthorized", success: false });
+  }
+
   let { name, password, profilePic, coverPic, address, bio } = req.body;
+  let hashedPassword;
+  if (password) {
+    hashedPassword = bcrypt.hashSync(password, salt);
+  }
   try {
     let data = await User.findByIdAndUpdate(
       _id,
       {
-        $set: { name, password, profilePic, coverPic, address, bio },
+        $set: { name, password:hashedPassword, profilePic, coverPic, address, bio },
       },
       { new: true }
     );
