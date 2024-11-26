@@ -4,6 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [nameAlert, setNameAlert] = useState("");
+  const [emailAlert, setEmailAlert] = useState("");
+  const [passwordAlert, setPasswordAlert] = useState("");
   const [detail, setDetail] = useState({
     name: "",
     email: "",
@@ -23,7 +26,11 @@ const SignUp = () => {
       navigate("/");
       alert(response.data.msg);
     } else {
-      alert(response.data.msg);
+      if (response.data.name == "name") setNameAlert(response.data.msg);
+      else if (response.data.email == "email") setEmailAlert(response.data.msg);
+      else if (response.data.password == "password")
+        setPasswordAlert(response.data.msg);
+      else alert(response.data.msg);
     }
   };
 
@@ -40,6 +47,14 @@ const SignUp = () => {
             placeholder="Enter Name here"
             onChange={handleChange}
           />
+          {nameAlert ? (
+            <p className="text-red-600">
+              <sup>* </sup>
+              {nameAlert}
+            </p>
+          ) : (
+            ""
+          )}
         </div>
         <div className=" flex flex-col gap-2 items-center justify-center">
           <label htmlFor="email">Email</label>
@@ -51,6 +66,14 @@ const SignUp = () => {
             placeholder="Enter Email here"
             onChange={handleChange}
           />
+          {emailAlert ? (
+            <p className="text-red-600">
+              <sup>* </sup>
+              {emailAlert}
+            </p>
+          ) : (
+            ""
+          )}
         </div>
         <div className=" flex flex-col gap-2 items-center justify-center">
           <label htmlFor="password">Password</label>
@@ -62,6 +85,14 @@ const SignUp = () => {
             placeholder="Enter Password here"
             onChange={handleChange}
           />
+          {passwordAlert ? (
+            <p className="text-red-600">
+              <sup>* </sup>
+              {passwordAlert}
+            </p>
+          ) : (
+            ""
+          )}
         </div>
         <p className="flex gap-2 items-center justify-center">
           Already have an account?
@@ -72,7 +103,9 @@ const SignUp = () => {
             Log In
           </Link>
         </p>
-        <button onClick={handleSubmit}>Register</button>
+        <button className="buttonR" onClick={handleSubmit}>
+          Register
+        </button>
       </form>
     </div>
   );
