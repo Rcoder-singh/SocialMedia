@@ -1,7 +1,14 @@
-import React, { useState } from "react";
 import { userInstance } from "../axios";
+import { useNavigate } from "react-router-dom";
+import { fetchUserById } from "../Store/userSlice";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const Profile = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  let userDetails = useSelector((state) => state.user);
+  console.log("userDetails", userDetails);
   const [userInfo, setUserInfo] = useState({});
 
   const handleInput = (e) => {
@@ -11,23 +18,44 @@ const Profile = () => {
     e.preventDefault();
     try {
       let res = await userInstance.put(
-        `/update/6744d4503f2bf012cb976d01`,
-        userInfo
+        `/update/${userDetails.user._id}`,
+        userInfo,
+        {
+          headers: {
+            Authorization: userDetails.token,
+          },
+        }
       );
 
       let data = res.data;
-      console.log(data);
+      console.log("data", data);
+      dispatch(fetchUserById(userDetails.token));
+
+      if (res.data.success) {
+        alert(res.data.msg);
+      }
     } catch (error) {
       console.error(error);
     }
   };
 
+  useEffect(() => {
+    setUserInfo({
+      name: userDetails.user.name ? userDetails.user.name : "",
+      email: userDetails.user.email ? userDetails.user.email : "",
+      password: "",
+      bio: userDetails.user.bio ? userDetails.user.bio : "",
+    });
+  }, [userDetails]);
+
   const handleDelete = async () => {
     try {
-      let res = await userInstance.delete(`/delete/6744d4503f2bf012cb976d01`);
+      let res = await userInstance.delete(`/delete/${userDetails.user._id}`);
 
       let data = res.data;
       console.log(data);
+      if (res.data.success) alert(res.data.msg);
+      navigate("/register");
     } catch (error) {
       console.error(error);
     }
