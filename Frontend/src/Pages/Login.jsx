@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { userInstance } from "../axios";
+import { useDispatch } from "react-redux";
+import { setState } from "../Store/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [detail, setDetail] = useState({
     email: "",
@@ -14,13 +17,14 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(detail);
+    console.log("detail", detail);
 
     let response = await userInstance.post("login", detail);
     console.log("response", response.data);
     if (response.data.success) {
-      navigate("/");
+      dispatch(setState(response.data.token));
       alert(response.data.msg);
+      navigate("/");
     } else {
       alert(response.data.msg);
     }
@@ -60,7 +64,9 @@ const Login = () => {
             Sign Up
           </Link>{" "}
         </p>
-        <button onClick={handleSubmit}>Log In</button>
+        <button className="buttonL" onClick={handleSubmit}>
+          Log In
+        </button>
       </form>
     </div>
   );
