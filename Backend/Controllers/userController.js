@@ -133,4 +133,18 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, updateUser, deleteUser };
+const userInfo = async (req, res) => {
+  try {
+    let userId = req.user;
+    let user = await User.findById(userId);
+    res.json({ msg: "User information fetched successfully", success: true, user });
+  } catch (error) {
+    res.json({
+      msg: " error in user information fetch",
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { registerUser, loginUser, updateUser, deleteUser,userInfo };
