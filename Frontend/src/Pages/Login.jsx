@@ -7,6 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [emailAlert, setEmailAlert] = useState("");
+  const [passwordAlert, setPasswordAlert] = useState("");
   const [detail, setDetail] = useState({
     email: "",
     password: "",
@@ -26,7 +28,10 @@ const Login = () => {
       alert(response.data.msg);
       navigate("/");
     } else {
-      alert(response.data.msg);
+      if (response.data.email == "email") setEmailAlert(response.data.msg);
+      else if (response.data.password == "password")
+        setPasswordAlert(response.data.msg);
+      else alert(response.data.msg);
     }
   };
 
@@ -43,6 +48,14 @@ const Login = () => {
             placeholder="Enter Email here"
             onChange={handleChange}
           />
+          {emailAlert ? (
+            <p className="text-red-600">
+              <sup>* </sup>
+              {emailAlert}
+            </p>
+          ) : (
+            ""
+          )}
         </div>
         <div className=" flex flex-col gap-2 items-center justify-center">
           <label htmlFor="password">Password</label>
@@ -54,6 +67,14 @@ const Login = () => {
             placeholder="Enter Password here"
             onChange={handleChange}
           />
+          {passwordAlert ? (
+            <p className="text-red-600">
+              <sup>* </sup>
+              {passwordAlert}
+            </p>
+          ) : (
+            ""
+          )}
         </div>
         <p>
           Don't have an account?{" "}
