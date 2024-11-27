@@ -23,7 +23,7 @@ const SignUp = () => {
     let response = await userInstance.post("register", detail);
     console.log("response", response.data);
     if (response.data.success) {
-      navigate("/");
+      navigate("/login");
       alert(response.data.msg);
     } else {
       if (response.data.name == "name") setNameAlert(response.data.msg);
